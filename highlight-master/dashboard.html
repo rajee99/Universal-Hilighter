@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HighlightMaster Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <header class="hmdb-topbar">
+    <div class="hmdb-brand-wrap">
+      <div class="hmdb-brand">
+        <div class="hmdb-logo">
+          <img src="icons/icon128.png" alt="HighlightMaster" width="28" height="28">
+        </div>
+        <span class="hmdb-brand-name">HighlightMaster</span>
+      </div>
+      <div class="hmdb-status" id="statusBadge" role="status" aria-live="polite">
+        <span class="hmdb-status-label">Status</span>
+        <span class="hmdb-status-dot"></span>
+        <span class="hmdb-status-text" id="statusText">Active</span>
+      </div>
+    </div>
+
+    <div class="hmdb-top-actions">
+      <button id="btnUploadNotebookFile" class="hmdb-btn hmdb-btn-upload" title="Attach files to notebook">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
+        <span>Upload</span>
+      </button>
+      <button id="btnToggleFullscreen" class="hmdb-btn hmdb-btn-soft" title="Toggle fullscreen mode">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3H3v4M21 7V3h-4M17 21h4v-4M3 17v4h4"/><path d="M8 8h8v8H8z"/></svg>
+        <span>Fullscreen</span>
+      </button>
+      <button id="btnRefreshDashboard" class="hmdb-btn hmdb-btn-soft" title="Refresh dashboard data">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        <span>Refresh</span>
+      </button>
+      <button id="btnDashboardPower" class="hmdb-btn hmdb-btn-primary" title="Enable or disable extension">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v10"/><path d="M18.36 5.64a9 9 0 1 1-12.72 0"/></svg>
+        <span id="powerButtonText">System Power</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="hmdb-shell">
+    <aside class="hmdb-sidebar">
+      <div class="hmdb-sidebar-head">
+        <h2>Collections</h2>
+        <p>The Digital Curator</p>
+      </div>
+
+      <nav class="hmdb-nav" aria-label="Views">
+        <button class="hmdb-nav-btn active" data-view="all">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          <span>All</span>
+        </button>
+        <button class="hmdb-nav-btn" data-view="pinned">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17v5"/><path d="M8 10V3h10.2a1.8 1.8 0 0 1 1.8 1.8v8.8L17 11l-3 3-2-2-2 2z"/></svg>
+          <span>Pinned</span>
+        </button>
+        <button class="hmdb-nav-btn" data-view="timeline">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6l4 2"/></svg>
+          <span>Timeline</span>
+        </button>
+        <button class="hmdb-nav-btn" data-view="notebook">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M12 11v6"/><path d="M9 14h6"/></svg>
+          <span>Shared Files</span>
+        </button>
+      </nav>
+
+      <section class="hmdb-category-panel" aria-label="Categories">
+        <div class="hmdb-section-title">Categories</div>
+        <div id="categoryList" class="hmdb-category-list"></div>
+      </section>
+
+      <button id="btnNewCategory" class="hmdb-new-group" title="Create category">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <span>New Group</span>
+      </button>
+    </aside>
+
+    <main class="hmdb-main">
+      <section class="hmdb-toolbar">
+        <div class="hmdb-search-wrap">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="searchInput" type="text" placeholder="Search across your curated highlights..." autocomplete="off">
+        </div>
+
+        <div class="hmdb-filter-row">
+          <div class="hmdb-chip-row" id="domainChips" aria-label="Domain filters"></div>
+
+          <div class="hmdb-right-controls">
+            <div class="hmdb-color-filter" id="colorFilter" aria-label="Color filter">
+              <span>Color</span>
+              <button data-color="all" class="active" title="All colors"></button>
+              <button data-color="yellow" title="Yellow"></button>
+              <button data-color="green" title="Green"></button>
+              <button data-color="blue" title="Blue"></button>
+              <button data-color="pink" title="Pink"></button>
+              <button data-color="orange" title="Orange"></button>
+              <button data-color="custom" title="Custom"></button>
+            </div>
+
+            <label class="hmdb-sort-wrap">
+              <span>Sort</span>
+              <select id="sortSelect" aria-label="Sort results">
+                <option value="date_desc">Newest first</option>
+                <option value="date_asc">Oldest first</option>
+                <option value="alpha_asc">A to Z</option>
+                <option value="alpha_desc">Z to A</option>
+              </select>
+            </label>
+
+            <label class="hmdb-sort-wrap hmdb-category-filter">
+              <span>Category</span>
+              <select id="categoryFilter" aria-label="Filter by category">
+                <option value="all">All categories</option>
+                <option value="uncategorized">Uncategorized</option>
+                <option value="with_notes">With notes</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="hmdb-summary" id="summaryText">0 highlights</div>
+      </section>
+
+      <section id="dashboardContent" class="hmdb-content" aria-live="polite"></section>
+    </main>
+  </div>
+
+  <footer class="hmdb-footer">
+    <div class="hmdb-footer-left">
+      <span id="dashboardVersion">HighlightMaster v-</span>
+      <button id="btnNewNotebookNote" class="hmdb-footer-btn">New Note</button>
+      <button id="btnExport" class="hmdb-footer-btn">Export</button>
+      <button id="btnImport" class="hmdb-footer-btn">Import</button>
+      <button id="btnRestore" class="hmdb-footer-btn">Restore</button>
+    </div>
+    <div class="hmdb-footer-right" id="selectionInfo">Dashboard Mode</div>
+    <input id="importFile" type="file" accept=".json" hidden>
+    <input id="notebookFileInput" type="file" multiple hidden>
+    <input id="highlightFileInput" type="file" multiple hidden>
+  </footer>
+
+  <div id="emptyState" class="hmdb-empty" hidden>
+    <div class="hmdb-empty-icon">+</div>
+    <h3>No results found</h3>
+    <p>Try changing filters or highlighting new content.</p>
+  </div>
+
+  <div id="noteModal" class="hmdb-modal" hidden>
+    <div class="hmdb-modal-card">
+      <div class="hmdb-modal-top">
+        <h3>Edit Note</h3>
+        <button id="btnCloseNoteModal" class="hmdb-icon-btn" title="Close note editor">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <p id="noteContext" class="hmdb-note-context"></p>
+      <textarea id="noteEditor" rows="7" placeholder="Write your note. Auto-save is enabled."></textarea>
+      <div class="hmdb-modal-bottom">
+        <span id="noteSaveState">Saved</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="hmdb-toast" role="status" aria-live="polite"></div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

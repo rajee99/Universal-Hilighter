@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HighlightMaster</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="hm-v2">
+  <header class="hm-header">
+    <div class="hm-brand">
+      <div class="hm-logo">
+        <img src="icons/icon128.png" width="24" height="24" alt="HighlightMaster">
+      </div>
+      <div class="hm-brand-text">
+        <span class="hm-title">HighlightMaster</span>
+        <div class="hm-stats-badge" id="statsBadge" role="status" aria-live="polite">
+          <span id="statsCount">0 highlights</span>
+        </div>
+        <div class="hm-color-stats" id="colorStatsBar" aria-label="Highlight color breakdown"></div>
+      </div>
+    </div>
+    <div class="hm-header-actions">
+      <button class="hm-open-dashboard-btn" id="btnOpenDashboard" title="Open dashboard in a new tab">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+          <line x1="9" y1="9" x2="15" y2="9"></line>
+          <line x1="9" y1="13" x2="15" y2="13"></line>
+          <line x1="9" y1="17" x2="13" y2="17"></line>
+        </svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="hm-draw-toggle-btn" id="btnRectMode" title="Draw rectangle">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+        </svg>
+      </button>
+      <button class="hm-auto-ocr-btn" id="btnAutoOcrCopy" title="Auto OCR copy off" aria-pressed="false">
+        OCR
+      </button>
+      <label class="hm-toggle" title="Enable / Disable">
+        <input type="checkbox" id="toggleEnabled">
+        <span class="hm-toggle-track">
+          <span class="hm-toggle-thumb"></span>
+        </span>
+      </label>
+    </div>
+  </header>
+
+  <div class="hm-domain-bar" id="currentDomainBar">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="2" y1="12" x2="22" y2="12"></line>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+    </svg>
+    <span id="currentDomainText">-</span>
+  </div>
+
+  <div class="hm-continuous-row">
+    <button class="hm-continuous-toggle" id="btnContinuousMode" title="Enable continuous highlight">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 3l7 7-7 7-7-7 7-7z"></path>
+      </svg>
+      <span>HL</span>
+    </button>
+    <select id="continuousColor" class="hm-select hm-continuous-select" aria-label="Continuous highlight color">
+      <option value="yellow">Yellow</option>
+      <option value="green">Green</option>
+      <option value="blue">Blue</option>
+      <option value="pink">Pink</option>
+      <option value="orange">Orange</option>
+      <option value="custom">Custom</option>
+    </select>
+    <input type="color" id="continuousCustomColor" class="hm-continuous-custom" value="#ffd42e" aria-label="Custom continuous highlight color">
+  </div>
+
+  <div class="hm-search-wrap">
+    <label for="searchInput" class="hm-visually-hidden">Search highlights</label>
+    <svg class="hm-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="7"></circle>
+      <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
+    </svg>
+    <input type="text" id="searchInput" class="hm-search" placeholder="Search highlights / notes..." aria-label="Search highlights">
+  </div>
+
+  <div class="hm-view-controls" id="viewControls">
+    <div class="hm-control">
+      <label for="filterColor" class="hm-control-label">Filter</label>
+      <select id="filterColor" class="hm-select hm-view-select" aria-label="Filter by color">
+        <option value="all">All colors</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+        <option value="pink">Pink</option>
+        <option value="orange">Orange</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <div class="hm-control">
+      <label for="sortOrder" class="hm-control-label">Sort</label>
+      <select id="sortOrder" class="hm-select hm-view-select" aria-label="Sort highlights">
+        <option value="date_desc">Newest first</option>
+        <option value="date_asc">Oldest first</option>
+        <option value="alpha_asc">A to Z</option>
+        <option value="alpha_desc">Z to A</option>
+      </select>
+    </div>
+    <div class="hm-control hm-control-full">
+      <label for="filterCategory" class="hm-control-label">Categories</label>
+      <select id="filterCategory" class="hm-select hm-view-select" aria-label="Filter by category">
+        <option value="all">All categories</option>
+        <option value="uncategorized">Uncategorized</option>
+        <option value="with_notes">With notes</option>
+        <option value="text_only">Text highlights only</option>
+        <option value="rectangles_only">Rectangles only</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="hm-tabs">
+    <div class="hm-tabs-inner">
+      <button class="hm-tab active" data-tab="all">All</button>
+      <button class="hm-tab" data-tab="favorites">Pinned</button>
+      <button class="hm-tab" data-tab="timeline">Timeline</button>
+    </div>
+    <button class="hm-icon-btn hm-new-folder-btn" id="btnNewFolder" title="New Category">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        <line x1="12" y1="11" x2="12" y2="17"></line>
+        <line x1="9" y1="14" x2="15" y2="14"></line>
+      </svg>
+    </button>
+  </div>
+
+  <div class="hm-bulk-bar" id="bulkBar" style="display:none;">
+    <div class="hm-bulk-top">
+      <span class="hm-bulk-count" id="bulkCount">0 selected</span>
+      <button class="hm-bulk-link" id="btnSelectVisible" title="Select all visible">Select Visible</button>
+      <button class="hm-bulk-link" id="btnClearSelection" title="Clear selected">Clear</button>
+    </div>
+    <div class="hm-bulk-actions">
+      <div class="hm-bulk-colors" id="bulkColors">
+        <button class="hm-bulk-color" data-bulk-color="yellow" title="Yellow"></button>
+        <button class="hm-bulk-color" data-bulk-color="green" title="Green"></button>
+        <button class="hm-bulk-color" data-bulk-color="blue" title="Blue"></button>
+        <button class="hm-bulk-color" data-bulk-color="pink" title="Pink"></button>
+        <button class="hm-bulk-color" data-bulk-color="orange" title="Orange"></button>
+      </div>
+      <button class="hm-btn hm-bulk-btn" id="btnBulkMarkdown" title="Export selected to markdown">Markdown</button>
+      <button class="hm-btn hm-bulk-btn danger" id="btnBulkDelete" title="Delete selected">Delete</button>
+    </div>
+  </div>
+
+  <div class="hm-content">
+    <div class="hm-tab-panel active" id="panelAll">
+      <div class="hm-list" id="domainList"></div>
+      <div class="hm-empty" id="emptyAll" style="display:none;">
+        <div class="hm-empty-icon">+</div>
+        <p id="emptyTitle">No highlights yet</p>
+        <span id="emptySubtitle">Highlight text on any website and it will appear here.</span>
+      </div>
+    </div>
+
+    <div class="hm-tab-panel" id="panelFavorites">
+      <div class="hm-list" id="favoritesList"></div>
+      <div class="hm-empty" id="emptyFav" style="display:none;">
+        <div class="hm-empty-icon">★</div>
+        <p>No pins yet</p>
+        <span>Pin important highlights to keep them easy to find.</span>
+      </div>
+    </div>
+
+    <div class="hm-tab-panel" id="panelTimeline">
+      <div class="hm-timeline-actions">
+        <span class="hm-timeline-results" id="timelineResults">0 entries</span>
+        <button id="btnUndoLast" class="hm-btn">Undo Last</button>
+      </div>
+      <div class="hm-list" id="timelineList"></div>
+      <div class="hm-empty" id="emptyTimeline" style="display:none;">
+        <div class="hm-empty-icon">⏱</div>
+        <p>No timeline yet</p>
+        <span>Your recent actions will appear here.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hm-toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer class="hm-footer">
+    <button id="btnExport" class="hm-btn" title="Export all highlights">Export</button>
+    <button id="btnImport" class="hm-btn" title="Import highlights">Import</button>
+    <button id="btnRestoreDeleted" class="hm-btn" title="Restore deleted item">Restore</button>
+    <button id="btnDeletedCsv" class="hm-btn danger" title="Export deleted log CSV">Deleted CSV</button>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+  </footer>
+  <div class="hm-footer-hint">Alt+1..5 highlight, Ctrl+Shift+H toggle | <span id="popupVersion">v-</span></div>
+
+  <div class="hm-modal" id="dialogModal" style="display:none;">
+    <div class="hm-modal-content">
+      <h3 id="dialogTitle">Create Category</h3>
+      <input type="text" id="dialogInput" placeholder="Category Name..." autocomplete="off">
+      <textarea id="dialogTextarea" class="hm-textarea" style="display:none;" rows="5" placeholder="Write a note..."></textarea>
+      <div id="dialogSelectWrap" style="display:none;">
+        <select id="dialogSelect" class="hm-select"></select>
+      </div>
+      <div class="hm-modal-actions">
+        <button id="dialogBtnCancel" class="hm-btn">Cancel</button>
+        <button id="dialogBtnConfirm" class="hm-btn hm-btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
